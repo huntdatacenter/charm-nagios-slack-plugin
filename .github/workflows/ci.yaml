@@ -69,5 +69,5 @@ jobs:
       - name: Run tests
         run: make test-${{ matrix.test_bundles }}
       - name: Display juju debug log on failure
-        run: juju debug-log
+        run: juju debug-log --replay
         if: failure()
