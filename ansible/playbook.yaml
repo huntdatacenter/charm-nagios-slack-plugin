@@ -1,0 +1,40 @@
+- hosts: localhost
+  vars:
+    nagios_path: /etc/nagios3
+    nagios_conf_path: /etc/nagios3/conf.d
+    nagios_plugins_path: /usr/lib/nagios/plugins
+
+  tasks:
+    - name: Template slack_notify to {{ nagios_plugins_path }}
+      template:
+        src: "templates/slack_notify.j2"
+        dest: "{{ nagios_plugins_path }}/slack_notify"
+        mode: "0755"
+      notify: restart nagios
+
+    - name: Remove slack_notify from {{ nagios_plugins_path }}
+      file:
+        path: "{{ nagios_plugins_path }}/slack_notify"
+        state: absent
+      notify: restart nagios
+      tags: never, uninstall
+
+    - name: Template slack.cfg to {{ nagios_conf_path }}
+      template:
+        src: "templates/slack.cfg.j2"
+        dest: "{{ nagios_conf_path }}/slack.cfg"
+        mode: "0644"
+      notify: restart nagios
+
+    - name: Remove slack.cfg from {{ nagios_conf_path }}
+      file:
+        path: "{{ nagios_conf_path }}/slack.cfg"
+        state: absent
+      notify: restart nagios
+      tags: never, uninstall
+
+  handlers:
+    - name: restart nagios
+      service:
+        name: nagios3
+        state: restarted

@@ -1,0 +1,17 @@
+name: nagios-slack-plugin
+summary: Nagios notification for Slack
+maintainer: Sandor Zeestraten <sandor.zeestraten@ntnu.no>
+description: |
+  Send Nagios notifications to Slack with this plugin.
+tags:
+  - monitoring
+  - nagios
+  - slack
+subordinate: true
+series:
+  - xenial
+  - bionic
+requires:
+  juju-info:
+    interface: juju-info
+    scope: container

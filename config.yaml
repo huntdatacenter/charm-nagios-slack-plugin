@@ -1,0 +1,31 @@
+options:
+  contact_name:
+    type: string
+    default: "slack"
+    description: |
+      The Nagios contact name.
+  service_notification_period:
+    type: string
+    default: "24x7"
+    description: |
+      The Nagios service_notification_period.
+  service_notification_options:
+    type: string
+    default: "w,u,c,r"
+    description: |
+      The Nagios service_notification_options.
+  host_notification_period:
+    type: string
+    default: "24x7"
+    description: |
+      The Nagios host_notification_period.
+  host_notification_options:
+    type: string
+    default: "d,r"
+    description: |
+      The Nagios host_notification_options.
+  slack_webhook_url:
+    type: string
+    default: ""
+    description: |
+      The Slack Webhook URL for the plugin.

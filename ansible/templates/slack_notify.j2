@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# Get parameters
+while getopts 'a:b:c:d:e:f:g:h:i:' option; do
+  case "${option}" in
+    a) NOTIFICATIONTYPE="${OPTARG}" ;;
+    b) HOST="${OPTARG}" ;;
+    c) HOSTSTATE="${OPTARG}" ;;
+    d) HOSTOUTPUT="${OPTARG}" ;;
+    e) SERVICEDESC="${OPTARG}" ;;
+    f) SERVICESTATE="${OPTARG}" ;;
+    g) SERVICEOUTPUT="${OPTARG}" ;;
+    h) NOTIFICATIONCOMMENT="${OPTARG}" ;;
+  esac
+done
+
+# Host notification
+if [[ -n $HOSTSTATE ]]; then
+
+# Host colors
+if [[ $NOTIFICATIONTYPE == "ACKNOWLEDGEMENT" ]]; then
+  # If ACKNOWLEDGEMENT, then also add NOTIFICATIONCOMMENT
+  COLOR="#1985ff"
+  COMMENT="\nComment: $NOTIFICATIONCOMMENT"
+elif [[ $HOSTSTATE == "UP" ]]; then
+  COLOR="#00C500"
+elif [[ $HOSTSTATE == "DOWN" ]]; then
+  COLOR="#FF0000"
+elif [[ $HOSTSTATE == "UNREACHABLE" ]]; then
+  COLOR="#CCCCCC"
+else
+  COLOR="#CCCCCC"
+fi
+
+# Host message
+SLACK_MSG=$(cat <<EOF
+  {
+    "attachments": [
+      {
+        "color": "$COLOR",
+        "title": "Host $NOTIFICATIONTYPE",
+        "mrkdwn_in": ["text"],
+        "text": "\`\`\`Host:    $HOST\nOutput:  $HOSTOUTPUT\nState:   $HOSTSTATE$COMMENT\`\`\`"
+      }
+    ]
+  }
+EOF
+)
+
+# Service notification
+else
+
+# Service colors
+if [[ $NOTIFICATIONTYPE == "ACKNOWLEDGEMENT" ]]; then
+  # If ACKNOWLEDGEMENT, then also add NOTIFICATIONCOMMENT
+  COLOR="#1985ff"
+  COMMENT="\nComment: $NOTIFICATIONCOMMENT"
+elif [[ $SERVICESTATE == "CRITICAL" ]]; then
+  COLOR="#FF0000"
+elif [[ $SERVICESTATE == "WARNING" ]]; then
+  COLOR="#FF9B00"
+elif [[ $SERVICESTATE == "OK" ]]; then
+  COLOR="#00C500"
+elif [[ $SERVICESTATE == "UNKNOWN" ]]; then
+  COLOR="#CCCCCC"
+else
+  COLOR="#CCCCCC"
+fi
+
+# Service message
+SLACK_MSG=$(cat << EOF
+  {
+    "attachments": [
+      {
+        "color": "$COLOR",
+        "title": "Service $NOTIFICATIONTYPE",
+        "mrkdwn_in": ["text"],
+        "text": "\`\`\`Host:    $HOST\nService: $SERVICEDESC\nOutput:  $SERVICEOUTPUT\nState:   $SERVICESTATE$COMMENT\`\`\`",
+      }
+    ]
+  }
+EOF
+)
+
+fi
+
+# Send message to Slack
+curl --ipv4 --request POST --data "$SLACK_MSG" {{ slack_webhook_url }}

@@ -1,0 +1,30 @@
+# { ansible_managed }
+
+################################################################################
+# CONTACTS
+################################################################################
+
+define contact{
+    contact_name                    {{ contact_name }}
+    host_notification_period        {{ host_notification_period }}
+    service_notification_period     {{ service_notification_period }}
+    host_notification_options       {{ host_notification_options }}
+    service_notification_options    {{ service_notification_options }}
+    host_notification_commands      notify-host-by-slack
+    service_notification_commands   notify-service-by-slack
+    }
+
+
+################################################################################
+# NOTIFICATION COMMANDS
+################################################################################
+
+define command{
+    command_name    notify-host-by-slack
+    command_line    {{ nagios_plugins_path }}/slack_notify -a "$NOTIFICATIONTYPE$" -b "$HOSTNAME$" -c "$HOSTSTATE$" -d "$HOSTOUTPUT$" -h "$NOTIFICATIONCOMMENT$" -i "$LONGDATETIME$"
+    }
+
+define command{
+    command_name    notify-service-by-slack
+    command_line    {{ nagios_plugins_path }}/slack_notify -a "$NOTIFICATIONTYPE$" -b "$HOSTNAME$" -e "$SERVICEDESC$" -f "$SERVICESTATE$" -g "$SERVICEOUTPUT$" -h "$NOTIFICATIONCOMMENT$" -i "$LONGDATETIME$"
+    }
