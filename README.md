@@ -17,6 +17,7 @@ juju deploy cs:~huntdatacenter/nagios-slack-plugin
 juju deploy nagios
 juju add-relation nagios:juju-info nagios-slack-plugin:juju-info
 juju config nagios contactgroup-members="root,slack"
+juju config nagios-slack-plugin slack_webhook_url="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
 ## Development

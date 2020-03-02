@@ -29,3 +29,4 @@ options:
     default: ""
     description: |
       The Slack Webhook URL for the plugin.
+      This configuration option must be set.
