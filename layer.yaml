@@ -1,7 +1,7 @@
 repo: https://github.com/huntdatacenter/charm-nagios-slack-plugin.git
 includes:
   - 'layer:basic'
-  - 'interface:juju-info'
+  # - 'interface:juju-info'
 options:
   basic:
     python_packages: ['ansible']
